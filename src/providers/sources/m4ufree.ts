@@ -113,11 +113,16 @@ const universalScraper = async (ctx: MovieScrapeContext | ShowScrapeContext) => 
 
   for (const source of sources) {
     let embedId;
-    if (source.name === 'm')
-      embedId = 'playm4u-m'; // TODO
-    else if (source.name === 'nm') embedId = 'playm4u-nm';
-    else if (source.name === 'h') embedId = 'hydrax';
-    else continue;
+
+    if (source.name === 'm') {
+      embedId = 'playm4u-m';
+    } else if (source.name === 'nm') {
+      continue;
+    } else if (source.name === 'h') {
+      embedId = 'playm4u-nm';
+    } else {
+      continue;
+    }
 
     const iframePage$ = load(
       await ctx.proxiedFetcher<string>('/ajax', {
