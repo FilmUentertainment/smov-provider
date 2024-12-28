@@ -70,7 +70,12 @@ async function comboScraper(ctx: MovieScrapeContext): Promise<SourcererOutput> {
     throw new Error('No URL found in response');
   }
 
-  const url = serverUrls.find((x) => x.includes('vidsrc')) || $ajaxPage('iframe').first().attr('src'); // I couldn't think of a better way
+  ctx.progress(90);
+
+  // now we get the embed source url
+  const embedUrl = load(await ctx.proxiedFetcher(serverUrls[0]));
+
+  const url = embedUrl('iframe').first().attr('src');
   if (!url) throw new Error('Failed to find embed url');
 
   return {
