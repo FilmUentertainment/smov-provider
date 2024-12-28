@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import { load } from 'cheerio';
 
 import { flags } from '@/entrypoint/utils/targets';
@@ -9,6 +10,7 @@ import { NotFoundError } from '@/utils/errors';
 const baseUrl = 'https://hydrahd.me';
 
 async function comboScraper(ctx: MovieScrapeContext): Promise<SourcererOutput> {
+  // Searching and finding the watch page so we can use it as a refer for the ajax request
   const searchPage = await ctx.proxiedFetcher('/index.php', {
     baseUrl,
     query: {
@@ -40,6 +42,7 @@ async function comboScraper(ctx: MovieScrapeContext): Promise<SourcererOutput> {
 
   ctx.progress(60);
 
+  // ajax page maybe
   const { imdbId, tmdbId } = ctx.media;
   const ajaxUrl = `/ajax/mov_0.php?i=${imdbId}&t=${tmdbId}`;
 
@@ -64,14 +67,17 @@ async function comboScraper(ctx: MovieScrapeContext): Promise<SourcererOutput> {
   });
 
   if (serverUrls.length === 0) {
-    throw new Error('No server URL found in the AJAX response');
+    throw new Error('No URL found in response');
   }
+
+  const url = serverUrls.find((x) => x.includes('vidsrc')) || $ajaxPage('iframe').first().attr('src'); // I couldn't think of a better way
+  if (!url) throw new Error('Failed to find embed url');
 
   return {
     embeds: [
       {
         embedId: 'vidsrcembed',
-        url: serverUrls[0],
+        url,
       },
     ],
   };
@@ -81,7 +87,7 @@ export const hydrahdScraper = makeSourcerer({
   id: 'hydrahd',
   name: 'HydraHD',
   rank: 122,
-  disabled: true,
+  disabled: false,
   flags: [flags.CORS_ALLOWED],
   scrapeMovie: comboScraper,
 });
