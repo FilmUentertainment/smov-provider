@@ -25,7 +25,7 @@ async function comboScraper(ctx: ShowScrapeContext | MovieScrapeContext): Promis
 export const bombtheirishScraper = makeSourcerer({
   id: 'bombtheirish',
   name: 'BombTI',
-  rank: 50,
+  rank: 111,
   flags: [flags.CORS_ALLOWED],
   scrapeMovie: comboScraper,
   scrapeShow: comboScraper,
