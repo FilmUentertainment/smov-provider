@@ -69,7 +69,7 @@ async function comboScraper(ctx: MovieScrapeContext): Promise<SourcererOutput> {
   return {
     embeds: [
       {
-        embedId: 'turbovid',
+        embedId: 'vidsrcembed',
         url: serverUrls[0],
       },
     ],
