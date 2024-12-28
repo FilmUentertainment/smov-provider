@@ -62,6 +62,7 @@ import { warezPlayerScraper } from './embeds/warezcdn/warezplayer';
 import { wootlyScraper } from './embeds/wootly';
 import { goojaraScraper } from './sources/goojara';
 import { hdRezkaScraper } from './sources/hdrezka';
+import { hydrahdScraper } from './sources/hydrahd';
 import { m4uScraper } from './sources/m4ufree';
 import { nepuScraper } from './sources/nepu';
 import { nitesScraper } from './sources/nites';
@@ -104,6 +105,7 @@ export function gatherAllSources(): Array<Sourcerer> {
     fsharetvScraper,
     redStarScraper,
     bombtheirishScraper,
+    hydrahdScraper,
   ];
 }
 
