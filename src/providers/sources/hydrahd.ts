@@ -1,5 +1,6 @@
 import { load } from 'cheerio';
 
+import { flags } from '@/entrypoint/utils/targets';
 import { SourcererOutput, makeSourcerer } from '@/providers/base';
 import { compareMedia } from '@/utils/compare';
 import { MovieScrapeContext } from '@/utils/context';
@@ -80,6 +81,7 @@ export const hydrahdScraper = makeSourcerer({
   id: 'hydrahd',
   name: 'HydraHD',
   rank: 122,
-  flags: [],
+  disabled: true,
+  flags: [flags.CORS_ALLOWED],
   scrapeMovie: comboScraper,
 });
