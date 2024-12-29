@@ -124,7 +124,7 @@ export const hydrahdScraper = makeSourcerer({
   id: 'hydrahd',
   name: 'HydraHD',
   rank: 122,
-  disabled: false,
+  disabled: true,
   flags: [flags.CORS_ALLOWED],
   scrapeMovie: comboScraper,
 });
