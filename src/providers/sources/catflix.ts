@@ -50,9 +50,6 @@ async function comboScraper(ctx: MovieScrapeContext): Promise<SourcererOutput> {
 
   const decodedUrl = decodeBase64(Catflix1);
 
-  const gimme = atob(Catflix1);
-  console.log('Gimme URL:', gimme);
-
   ctx.progress(90);
 
   return {
