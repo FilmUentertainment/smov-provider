@@ -70,6 +70,7 @@ import { primewireScraper } from './sources/primewire';
 import { ridooMoviesScraper } from './sources/ridomovies';
 import { smashyStreamScraper } from './sources/smashystream';
 import { soaperTvScraper } from './sources/soapertv';
+import { uniquestreamScraper } from './sources/uniquestream';
 import { vidSrcToScraper } from './sources/vidsrcto';
 import { warezcdnScraper } from './sources/warezcdn';
 
@@ -106,6 +107,7 @@ export function gatherAllSources(): Array<Sourcerer> {
     redStarScraper,
     bombtheirishScraper,
     hydrahdScraper,
+    uniquestreamScraper,
   ];
 }
 
