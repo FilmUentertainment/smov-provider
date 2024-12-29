@@ -72,17 +72,49 @@ async function comboScraper(ctx: MovieScrapeContext): Promise<SourcererOutput> {
 
   ctx.progress(90);
 
-  // now we get the embed source url
-  const embedUrl = load(await ctx.proxiedFetcher(serverUrls[0]));
-
-  const url = embedUrl('iframe').first().attr('src');
-  if (!url) throw new Error('Failed to find embed url');
+  console.log('Available servers:', serverUrls);
 
   return {
     embeds: [
       {
         embedId: 'vidsrcembed',
-        url,
+        url: serverUrls[0],
+      },
+      {
+        embedId: 'vidsrcembed',
+        url: serverUrls[1],
+      },
+      {
+        embedId: 'vidsrcembed',
+        url: serverUrls[2],
+      },
+      {
+        embedId: 'vidsrcembed',
+        url: serverUrls[3],
+      },
+      {
+        embedId: 'turbovid', // 'moviesapi', not real
+        url: serverUrls[4],
+      },
+      {
+        embedId: 'turbovid', // 'ply4', not real
+        url: serverUrls[5],
+      },
+      {
+        embedId: 'turbovid', // 'primewire', not real
+        url: serverUrls[6],
+      },
+      {
+        embedId: 'turbovid', // 'killamrd', not real
+        url: serverUrls[7],
+      },
+      {
+        embedId: 'turbovid', // 'frembed', not real
+        url: serverUrls[8],
+      },
+      {
+        embedId: 'turbovid', // 'autoembed',i just dont understand this one
+        url: serverUrls[9],
       },
     ],
   };
