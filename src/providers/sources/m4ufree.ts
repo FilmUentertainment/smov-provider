@@ -154,7 +154,7 @@ const universalScraper = async (ctx: MovieScrapeContext | ShowScrapeContext) => 
 export const m4uScraper = makeSourcerer({
   id: 'm4ufree',
   name: 'M4UFree',
-  rank: 70,
+  rank: 60,
   flags: [],
   scrapeMovie: universalScraper,
   scrapeShow: universalScraper,
