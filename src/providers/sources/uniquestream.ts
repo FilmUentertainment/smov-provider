@@ -128,8 +128,8 @@ async function comboScraper(ctx: MovieScrapeContext): Promise<SourcererOutput> {
 export const uniquestreamScraper = makeSourcerer({
   id: 'uniquestream',
   name: 'UniqueStream',
-  rank: 142,
-  disabled: false,
+  rank: 82,
+  disabled: true,
   flags: [flags.CORS_ALLOWED],
   scrapeMovie: comboScraper,
 });
