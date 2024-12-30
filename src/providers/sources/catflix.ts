@@ -1,25 +1,38 @@
-/* eslint-disable no-console */
 import { load } from 'cheerio';
 
 import { flags } from '@/entrypoint/utils/targets';
 import { SourcererOutput, makeSourcerer } from '@/providers/base';
-import { MovieScrapeContext } from '@/utils/context';
+import { MovieScrapeContext, ShowScrapeContext } from '@/utils/context';
 
 const baseUrl = 'https://catflix.su';
 
-async function comboScraper(ctx: MovieScrapeContext): Promise<SourcererOutput> {
-  const movieId = ctx.media.tmdbId;
-  const movieTitle = ctx.media.title.replace(/ /g, '-').replace(/[():]/g, '').toLowerCase();
+function decodeBase64(encodedString: string): string {
+  return Buffer.from(encodedString, 'base64').toString('utf-8');
+}
 
-  const watchPageUrl = `${baseUrl}/movie/${movieTitle}-${movieId}`;
-  console.log('Watch page URL:', watchPageUrl);
+async function comboScraper(ctx: ShowScrapeContext | MovieScrapeContext): Promise<SourcererOutput> {
+  const movieId = ctx.media.tmdbId;
+  const mediaTitle = ctx.media.title.replace(/ /g, '-').replace(/[():]/g, '').toLowerCase();
+  let watchPageUrl: string | undefined;
+
+  if (ctx.media.type === 'movie') {
+    watchPageUrl = `${baseUrl}/movie/${mediaTitle}-${movieId}`;
+  } else if (ctx.media.type === 'show') {
+    const seasonNumber = ctx.media.season.number;
+    const episodeNumber = ctx.media.episode.number;
+    const episodeId = ctx.media.episode.tmdbId;
+
+    if (!episodeId) {
+      throw new Error('Missing episode ID for show');
+    }
+
+    watchPageUrl = `${baseUrl}/episode/${mediaTitle}-season-${seasonNumber}-episode-${episodeNumber}/eid-${episodeId}`;
+  }
+  if (!watchPageUrl) {
+    throw new Error('Failed to generate watch page URL');
+  }
 
   ctx.progress(60);
-
-  function decodeBase64(encodedString: string): string {
-    const decodedString = atob(encodedString);
-    return decodedString;
-  }
 
   const WatchPage = await ctx.proxiedFetcher(watchPageUrl);
   const $WatchPage = load(WatchPage);
@@ -28,9 +41,7 @@ async function comboScraper(ctx: MovieScrapeContext): Promise<SourcererOutput> {
     .toArray()
     .find((script) => {
       return (
-        script.children[0] &&
-        script.children[0].type === 'text' &&
-        script.children[0].data.includes('const main_origin =')
+        script.children[0] && script.children[0].type === 'text' && script.children[0].data.includes('main_origin =')
       );
     });
 
@@ -39,14 +50,13 @@ async function comboScraper(ctx: MovieScrapeContext): Promise<SourcererOutput> {
   }
 
   const mainOriginScript = scriptContent.children[0].type === 'text' ? scriptContent.children[0].data : '';
-  const mainOriginMatch = mainOriginScript.match(/const main_origin = "(.*?)";/);
+  const mainOriginMatch = mainOriginScript.match(/main_origin = "(.*?)";/);
 
   if (!mainOriginMatch) {
     throw new Error('Unable to extract main_origin value');
   }
 
   const Catflix1 = mainOriginMatch[1];
-  console.log('Catflix URL:', Catflix1);
 
   const decodedUrl = decodeBase64(Catflix1);
 
@@ -69,4 +79,5 @@ export const catflixScraper = makeSourcerer({
   flags: [flags.CORS_ALLOWED],
   disabled: false,
   scrapeMovie: comboScraper,
+  scrapeShow: comboScraper,
 });
