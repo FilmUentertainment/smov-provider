@@ -7,7 +7,8 @@ import { MovieScrapeContext, ShowScrapeContext } from '@/utils/context';
 const baseUrl = 'https://catflix.su';
 
 function decodeBase64(encodedString: string): string {
-  return Buffer.from(encodedString, 'base64').toString('utf-8');
+  const decodedString = atob(encodedString);
+  return decodedString;
 }
 
 async function comboScraper(ctx: ShowScrapeContext | MovieScrapeContext): Promise<SourcererOutput> {
