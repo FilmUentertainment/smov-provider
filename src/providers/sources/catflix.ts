@@ -1,6 +1,5 @@
 import { load } from 'cheerio';
 
-import { flags } from '@/entrypoint/utils/targets';
 import { SourcererOutput, makeSourcerer } from '@/providers/base';
 import { MovieScrapeContext, ShowScrapeContext } from '@/utils/context';
 
@@ -77,7 +76,7 @@ export const catflixScraper = makeSourcerer({
   id: 'catflix',
   name: 'Catflix',
   rank: 122,
-  flags: [flags.CORS_ALLOWED],
+  flags: [],
   disabled: false,
   scrapeMovie: comboScraper,
   scrapeShow: comboScraper,
