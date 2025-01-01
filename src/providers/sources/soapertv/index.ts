@@ -64,35 +64,25 @@ const universalScraper = async (ctx: MovieScrapeContext | ShowScrapeContext): Pr
   const streamResJson: InfoResponse = JSON.parse(streamRes);
 
   const captions: Caption[] = [];
-
-  if (Array.isArray(streamResJson.subs)) {
-    for (const sub of streamResJson.subs) {
-      if (!sub || typeof sub.name !== 'string' || typeof sub.path !== 'string') {
-        console.warn('Invalid subtitle entry:', sub);
-        continue; // Skip invalid subtitle entries
-      }
-
-      // Process valid subtitle entries
-      let language: string | null = '';
-      if (sub.name.includes('.srt')) {
-        language = labelToLanguageCode(sub.name.split('.srt')[0]);
-      } else if (sub.name.includes(':')) {
-        language = sub.name.split(':')[0];
-      } else {
-        language = sub.name;
-      }
-      if (!language) continue;
-
-      captions.push({
-        id: sub.path,
-        url: `${baseUrl}${sub.path}`,
-        type: 'srt',
-        hasCorsRestrictions: false,
-        language,
-      });
+  for (const sub of streamResJson.subs) {
+    // Some subtitles are named <Language>.srt, some are named <LanguageCode>:hi, or just <LanguageCode>
+    let language: string | null = '';
+    if (sub.name.includes('.srt')) {
+      language = labelToLanguageCode(sub.name.split('.srt')[0]);
+    } else if (sub.name.includes(':')) {
+      language = sub.name.split(':')[0];
+    } else {
+      language = sub.name;
     }
-  } else {
-    console.warn('`subs` is not an array or is missing:', streamResJson.subs);
+    if (!language) continue;
+
+    captions.push({
+      id: sub.path,
+      url: `${baseUrl}${sub.path}`,
+      type: 'srt',
+      hasCorsRestrictions: false,
+      language,
+    });
   }
 
   return {

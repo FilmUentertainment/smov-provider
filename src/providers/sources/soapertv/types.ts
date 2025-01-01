@@ -10,6 +10,6 @@ export interface InfoResponse {
   val_bak: string;
   pos: number;
   type: string;
-  subs?: Subtitle[];
+  subs: Subtitle[];
   ip: string;
 }
