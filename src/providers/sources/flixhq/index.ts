@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import { flags } from '@/entrypoint/utils/targets';
 import { SourcererEmbed, makeSourcerer } from '@/providers/base';
 import { upcloudScraper } from '@/providers/embeds/upcloud';
@@ -18,7 +19,14 @@ export const flixhqScraper = makeSourcerer({
 
     const sources = await getFlixhqMovieSources(ctx, ctx.media, id);
 
+    console.log(sources);
+
     const embeds: SourcererEmbed[] = [];
+
+    console.log(embeds);
+    console.log('Upcloud Embed ID:', upcloudScraper.id);
+    console.log('Vidcloud Embed ID:', vidCloudScraper.id);
+    // guess thats as far as this gets without wasm?
 
     for (const source of sources) {
       if (source.embed.toLowerCase() === 'upcloud') {
@@ -26,7 +34,7 @@ export const flixhqScraper = makeSourcerer({
           embedId: upcloudScraper.id,
           url: await getFlixhqSourceDetails(ctx, source.episodeId),
         });
-      } else if (source.embed.toLowerCase() === 'vidcloud') {
+      } else if (source.embed.toLowerCase() === 'megacloud') {
         embeds.push({
           embedId: vidCloudScraper.id,
           url: await getFlixhqSourceDetails(ctx, source.episodeId),

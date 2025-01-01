@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import { load } from 'cheerio';
 
 import { MovieMedia, ShowMedia } from '@/entrypoint/utils/media';

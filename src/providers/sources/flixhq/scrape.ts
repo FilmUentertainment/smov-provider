@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import { load } from 'cheerio';
 
 import { MovieMedia, ShowMedia } from '@/entrypoint/utils/media';
@@ -6,9 +7,11 @@ import { ScrapeContext } from '@/utils/context';
 import { NotFoundError } from '@/utils/errors';
 
 export async function getFlixhqSourceDetails(ctx: ScrapeContext, sourceId: string): Promise<string> {
-  const jsonData = await ctx.proxiedFetcher<Record<string, any>>(`/ajax/sources/${sourceId}`, {
+  const jsonData = await ctx.proxiedFetcher<Record<string, any>>(`/ajax/episode/sources/${sourceId}`, {
     baseUrl: flixHqBase,
   });
+
+  console.log(jsonData);
 
   return jsonData.link;
 }
@@ -17,7 +20,7 @@ export async function getFlixhqMovieSources(ctx: ScrapeContext, media: MovieMedi
   const episodeParts = id.split('-');
   const episodeId = episodeParts[episodeParts.length - 1];
 
-  const data = await ctx.proxiedFetcher<string>(`/ajax/movie/episodes/${episodeId}`, {
+  const data = await ctx.proxiedFetcher<string>(`/ajax/episode/list/${episodeId}`, {
     baseUrl: flixHqBase,
   });
 
@@ -38,6 +41,7 @@ export async function getFlixhqMovieSources(ctx: ScrapeContext, media: MovieMedi
   return sourceLinks;
 }
 
+// fix this
 export async function getFlixhqShowSources(ctx: ScrapeContext, media: ShowMedia, id: string) {
   const episodeParts = id.split('-');
   const episodeId = episodeParts[episodeParts.length - 1];
