@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import { flags } from '@/entrypoint/utils/targets';
 import { SourcererEmbed, SourcererOutput, makeSourcerer } from '@/providers/base';
 import { MovieScrapeContext, ShowScrapeContext } from '@/utils/context';
@@ -21,13 +20,7 @@ async function comboScraper(ctx: ShowScrapeContext | MovieScrapeContext): Promis
   const fileDataMatch = playerPage.match(/"file": (\[.*?\])/s);
   if (!fileDataMatch[1]) throw new NotFoundError('No data found');
 
-  let fileData: { title: string; file: string }[];
-
-  try {
-    fileData = JSON.parse(fileDataMatch[1].replace(/,\s*\]$/, ']'));
-  } catch (error) {
-    throw new NotFoundError('JSON parse error, probably protected by Cloudflare (╥﹏╥)');
-  }
+  const fileData: { title: string; file: string }[] = JSON.parse(fileDataMatch[1].replace(/,\s*\]$/, ']'));
 
   const embeds: SourcererEmbed[] = [];
 
