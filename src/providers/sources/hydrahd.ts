@@ -74,6 +74,21 @@ async function comboScraper(ctx: MovieScrapeContext): Promise<SourcererOutput> {
 
   console.log('Available servers:', serverUrls);
 
+  /* gets something like:
+  Available servers: [
+    'https://ythd.org/embed/tt18412256/',
+    'https://vidlink.pro/movie/945961?primaryColor=ce0d0d&secondaryColor=000000&iconColor=ffffff&poster=true&icons=vid&autoplay=true&ref=mapple',
+    'https://vidsrc.cc/v2/embed/movie/945961?autoPlay=true',
+    'https://vidsrc.vip/embed/movie/945961',
+    'https://moviesapi.club/movie/945961',
+    'https://ply4.com/movie/?id=tt18412256',
+    'https://www.primewire.tf/embed/movie?imdb=tt18412256',
+    'https://kllamrd.org/video/tt18412256',
+    'https://frembed.pro/api/film.php?id=tt18412256',
+    'https://player.autoembed.cc/embed/movie/tt18412256'
+  ]
+  */
+
   return {
     embeds: [
       {
@@ -93,27 +108,27 @@ async function comboScraper(ctx: MovieScrapeContext): Promise<SourcererOutput> {
         url: serverUrls[3],
       },
       {
-        embedId: 'turbovid', // 'moviesapi', not real
+        embedId: '', // 'moviesapi', new embed
         url: serverUrls[4],
       },
       {
-        embedId: 'turbovid', // 'ply4', not real
+        embedId: '', // 'ply4', new embed
         url: serverUrls[5],
       },
       {
-        embedId: 'turbovid', // 'primewire', not real
+        embedId: '', // 'primewire', new embed maybe?
         url: serverUrls[6],
       },
       {
-        embedId: 'turbovid', // 'killamrd', not real
+        embedId: '', // 'killamrd', new embed
         url: serverUrls[7],
       },
       {
-        embedId: 'turbovid', // 'frembed', not real
+        embedId: '', // 'frembed', new embed
         url: serverUrls[8],
       },
       {
-        embedId: 'turbovid', // 'autoembed',i just dont understand this one
+        embedId: '', // 'autoembed',i just dont understand this one
         url: serverUrls[9],
       },
     ],
@@ -123,7 +138,7 @@ async function comboScraper(ctx: MovieScrapeContext): Promise<SourcererOutput> {
 export const hydrahdScraper = makeSourcerer({
   id: 'hydrahd',
   name: 'HydraHD',
-  rank: 122,
+  rank: 123,
   disabled: true,
   flags: [flags.CORS_ALLOWED],
   scrapeMovie: comboScraper,
