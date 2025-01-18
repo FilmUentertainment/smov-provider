@@ -1,56 +1,42 @@
 import { load } from 'cheerio';
 
 import { SourcererOutput, makeSourcerer } from '@/providers/base';
-import { compareMedia } from '@/utils/compare';
 import { MovieScrapeContext, ShowScrapeContext } from '@/utils/context';
 import { NotFoundError } from '@/utils/errors';
 
 const baseUrl = 'https://catflix.su';
 
 async function comboScraper(ctx: ShowScrapeContext | MovieScrapeContext): Promise<SourcererOutput> {
-  const searchPage = await ctx.proxiedFetcher('/', {
-    baseUrl,
-    query: {
-      s: ctx.media.title,
-    },
-  });
+  const mediaTitle = ctx.media.title.replace(/ /g, '-').replace(/[():]/g, '').toLowerCase();
+  const mediaType = ctx.media.type;
+  const movieId = ctx.media.tmdbId;
 
-  ctx.progress(40);
-
-  const $search = load(searchPage);
-  const searchResults: { title: string; year?: number | undefined; url: string }[] = [];
-
-  $search('li').each((_, element) => {
-    const title = $search(element).find('h2').first().text().trim();
-    // the year is always present, but I sitll decided to make it nullable since the impl isn't as future-proof
-    const year = Number($search(element).find('.text-xs > span').eq(1).text().trim()) || undefined;
-    const url = $search(element).find('a').attr('href');
-
-    if (!title || !url) return;
-
-    searchResults.push({ title, year, url });
-  });
-
-  let watchPageUrl = searchResults.find((x) => x && compareMedia(ctx.media, x.title, x.year))?.url;
-  if (!watchPageUrl) throw new NotFoundError('No watchable item found');
+  const watchPageUrl =
+    mediaType === 'movie'
+      ? `${baseUrl}/movie/${mediaTitle}-${movieId}`
+      : `${baseUrl}/episode/${mediaTitle}-season-${ctx.media.season.number}-episode-${ctx.media.episode.number}/eid-${ctx.media.episode.tmdbId}`;
 
   ctx.progress(60);
 
-  if (ctx.media.type === 'show') {
-    const match = watchPageUrl.match(/\/series\/([^/]+)\/?/);
-    if (!match) throw new Error('Failed to parse watch page url');
-    watchPageUrl = watchPageUrl.replace(
-      `/series/${match[1]}`,
-      `/episode/${match[1]}-${ctx.media.season.number}x${ctx.media.episode.number}`,
-    );
-  }
+  const watchPage = await ctx.proxiedFetcher(watchPageUrl);
+  const $ = load(watchPage);
 
-  const watchPage = load(await ctx.proxiedFetcher(watchPageUrl));
+  const scriptContent = $('script')
+    .toArray()
+    .find((script) => {
+      const child = script.children[0];
+      return (
+        child && 'type' in child && child.type === 'text' && 'data' in child && child.data.includes('main_origin =')
+      );
+    });
 
-  ctx.progress(80);
+  if (!scriptContent) throw new NotFoundError('No embed data found');
 
-  const url = watchPage('iframe').first().attr('src'); // I couldn't think of a better way
-  if (!url) throw new Error('Failed to find embed url');
+  const scriptData = scriptContent.children[0] as { data: string };
+  const mainOriginMatch = scriptData.data.match(/main_origin = "(.*?)";/);
+  if (!mainOriginMatch) throw new NotFoundError('Failed to extract embed URL');
+
+  const decodedUrl = atob(mainOriginMatch[1]);
 
   ctx.progress(90);
 
@@ -58,7 +44,7 @@ async function comboScraper(ctx: ShowScrapeContext | MovieScrapeContext): Promis
     embeds: [
       {
         embedId: 'turbovid',
-        url,
+        url: decodedUrl,
       },
     ],
   };
