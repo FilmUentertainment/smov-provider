@@ -1,11 +1,13 @@
 import { Embed, Sourcerer } from '@/providers/base';
 import { doodScraper } from '@/providers/embeds/dood';
+import { linkmakeScraper } from '@/providers/embeds/linkmake';
 import { mixdropScraper } from '@/providers/embeds/mixdrop';
 import { turbovidScraper } from '@/providers/embeds/turbovid';
 import { upcloudScraper } from '@/providers/embeds/upcloud';
 import { autoembedScraper } from '@/providers/sources/autoembed';
 import { catflixScraper } from '@/providers/sources/catflix';
 import { ee3Scraper } from '@/providers/sources/ee3';
+import { filmyflyScraper } from '@/providers/sources/filmyfly';
 import { fsharetvScraper } from '@/providers/sources/fsharetv';
 import { insertunitScraper } from '@/providers/sources/insertunit';
 import { mp4hydraScraper } from '@/providers/sources/mp4hydra';
@@ -65,6 +67,7 @@ export function gatherAllSources(): Array<Sourcerer> {
   // all sources are gathered here
   return [
     catflixScraper,
+    filmyflyScraper,
     ridooMoviesScraper,
     hdRezkaScraper,
     warezcdnScraper,
@@ -100,6 +103,7 @@ export function gatherAllEmbeds(): Array<Embed> {
     doodScraper,
     streamvidScraper,
     streamtapeScraper,
+    linkmakeScraper,
     warezcdnembedHlsScraper,
     warezcdnembedMp4Scraper,
     warezPlayerScraper,
