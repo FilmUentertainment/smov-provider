@@ -94,7 +94,7 @@ async function comboScraper(ctx: MovieScrapeContext): Promise<SourcererOutput> {
 
 export const ee3Scraper = makeSourcerer({
   id: 'ee3',
-  name: 'EE3',
+  name: 'filmu server 4',
   rank: 120,
   flags: [flags.CORS_ALLOWED],
   scrapeMovie: comboScraper,
