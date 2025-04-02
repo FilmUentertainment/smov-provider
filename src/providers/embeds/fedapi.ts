@@ -7,6 +7,7 @@ import { Caption } from '../captions';
 
 // Thanks Nemo for this API!
 const BASE_URL = 'https://fed-api.pstream.org';
+const SHARED_BASE_URL = 'https://fed-api-shared.pstream.org';
 const CACHE_URL = 'https://fed-api.pstream.org/cache';
 
 const getShareConsent = (): string | null => {
@@ -102,10 +103,11 @@ function embed(provider: {
             : `${CACHE_URL}/${query.imdbId}/${query.season}/${query.episode}`;
       } else {
         // Standard API URL format
+        const baseUrl = !provider.useToken ? SHARED_BASE_URL : BASE_URL;
         apiUrl =
           query.type === 'movie'
-            ? `${BASE_URL}/movie/${query.imdbId}`
-            : `${BASE_URL}/tv/${query.tmdbId}/${query.season}/${query.episode}`;
+            ? `${baseUrl}/movie/${query.imdbId}`
+            : `${baseUrl}/tv/${query.tmdbId}/${query.season}/${query.episode}`;
       }
 
       // Prepare request headers
@@ -128,6 +130,9 @@ function embed(provider: {
       if (data?.error && data.error.startsWith('No results found in MovieBox search')) {
         throw new NotFoundError('No stream found');
       }
+      if (data?.error === 'No cached data found for this episode') {
+        throw new NotFoundError('No stream found');
+      }
       if (data?.error === 'No cached data found for this ID') {
         throw new NotFoundError('No stream found');
       }
@@ -138,15 +143,33 @@ function embed(provider: {
       // Process streams data
       const streams = Object.entries(data.streams).reduce((acc: Record<string, string>, [quality, url]) => {
         let qualityKey: number;
+        if (quality === 'ORG') {
+          acc.unknown = url;
+          return acc;
+        }
         if (quality === '4K') {
           qualityKey = 2160;
-        } else if (quality === 'ORG') {
-          return acc;
         } else {
           qualityKey = parseInt(quality.replace('P', ''), 10);
         }
         if (Number.isNaN(qualityKey) || acc[qualityKey]) return acc;
         acc[qualityKey] = url;
+        return acc;
+      }, {});
+
+      // Filter qualities based on provider type
+      const filteredStreams = Object.entries(streams).reduce((acc: Record<string, string>, [quality, url]) => {
+        // Skip unknown for cached provider
+        if (provider.useCacheUrl && quality === 'unknown') {
+          return acc;
+        }
+
+        // Skip unknown for shared provider
+        if (!provider.useToken && !provider.useCacheUrl && quality === 'unknown') {
+          return acc;
+        }
+
+        acc[quality] = url;
         return acc;
       }, {});
 
@@ -182,34 +205,40 @@ function embed(provider: {
             id: 'primary',
             captions,
             qualities: {
-              ...(streams[2160] && {
+              ...(filteredStreams[2160] && {
                 '4k': {
                   type: 'mp4',
-                  url: streams[2160],
+                  url: filteredStreams[2160],
                 },
               }),
-              ...(streams[1080] && {
+              ...(filteredStreams[1080] && {
                 1080: {
                   type: 'mp4',
-                  url: streams[1080],
+                  url: filteredStreams[1080],
                 },
               }),
-              ...(streams[720] && {
+              ...(filteredStreams[720] && {
                 720: {
                   type: 'mp4',
-                  url: streams[720],
+                  url: filteredStreams[720],
                 },
               }),
-              ...(streams[480] && {
+              ...(filteredStreams[480] && {
                 480: {
                   type: 'mp4',
-                  url: streams[480],
+                  url: filteredStreams[480],
                 },
               }),
-              ...(streams[360] && {
+              ...(filteredStreams[360] && {
                 360: {
                   type: 'mp4',
-                  url: streams[360],
+                  url: filteredStreams[360],
+                },
+              }),
+              ...(filteredStreams.unknown && {
+                unknown: {
+                  type: 'mp4',
+                  url: filteredStreams.unknown,
                 },
               }),
             },
