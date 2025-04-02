@@ -9,7 +9,7 @@ import { NotFoundError } from '@/utils/errors';
 // See how to set this up yourself: https://gist.github.com/Pasithea0/9ba31d16580800e899c245a4379e902b
 
 const baseUrl = 'https://iosmirror.cc';
-const baseUrl2 = 'https://vercel-sucks.up.railway.app/iosmirror.cc:443/pv';
+const baseUrl2 = 'https://filmueproxy.vercel.app/iosmirror.cc:443/pv';
 
 type metaT = {
   year: string;
@@ -21,11 +21,11 @@ type searchT = { searchResult?: { id: string; t: string; y: string }[]; error: s
 
 type episodeT = { episodes: { id: string; s: string; ep: string }[]; nextPageShow: number };
 
-// const userAgent = navigator.userAgent.toLowerCase();
-// const isIos = /iphone|ipad|ipod/.test(userAgent);
+const userAgent = navigator.userAgent.toLowerCase();
+const isIos = /iphone|ipad|ipod/.test(userAgent);
 
 const universalScraper = async (ctx: ShowScrapeContext | MovieScrapeContext): Promise<SourcererOutput> => {
-  const hash = decodeURIComponent(await ctx.fetcher('https://iosmirror-hash.pstream.org/'));
+  const hash = decodeURIComponent(await ctx.proxiedFetcher('https://filmuworker.entertainmentfilmu.workers.dev/'))
   if (!hash) throw new NotFoundError('No hash found');
   ctx.progress(10);
 
@@ -108,7 +108,7 @@ const universalScraper = async (ctx: ShowScrapeContext | MovieScrapeContext): Pr
 
   if (!autoFile) throw new Error('Failed to fetch playlist');
 
-  const playlist = `https://vercel-sucks.up.railway.app/m3u8-proxy?url=${encodeURIComponent(`${baseUrl}${autoFile}`)}&headers=${encodeURIComponent(JSON.stringify({ referer: baseUrl, cookie: makeCookieHeader({ hd: 'on' }) }))}`;
+  const playlist = `https://filmueproxy.vercel.app/m3u8-proxy?url=${encodeURIComponent(`${baseUrl}${autoFile}`)}&headers=${encodeURIComponent(JSON.stringify({ referer: baseUrl, cookie: makeCookieHeader({ hd: 'on' }) }))}`;
   ctx.progress(90);
 
   return {
@@ -127,10 +127,10 @@ const universalScraper = async (ctx: ShowScrapeContext | MovieScrapeContext): Pr
 
 export const iosmirrorPVScraper = makeSourcerer({
   id: 'iosmirrorpv',
-  name: 'PrimeMirror',
-  rank: 183,
+  name: 'FilmU PrimeMirror',
+  rank: 970,
   // disabled: !!isIos,
-  disabled: true,
+  disabled: false,
   flags: [flags.CORS_ALLOWED],
   scrapeMovie: universalScraper,
   scrapeShow: universalScraper,
