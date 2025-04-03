@@ -130,7 +130,7 @@ const universalScraper = async (ctx: ShowScrapeContext | MovieScrapeContext): Pr
 
 export const iosmirrorScraper = makeSourcerer({
   id: 'iosmirror',
-  name: 'FilmU Netmirror',
+  name: 'filmu netmirror',
   rank: 980,
   // disabled: !!isIos,
   disabled: false,
