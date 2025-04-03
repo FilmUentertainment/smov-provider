@@ -127,7 +127,7 @@ const universalScraper = async (ctx: ShowScrapeContext | MovieScrapeContext): Pr
 
 export const iosmirrorPVScraper = makeSourcerer({
   id: 'iosmirrorpv',
-  name: 'FilmU PrimeMirror',
+  name: 'filmu primemirror',
   rank: 970,
   // disabled: !!isIos,
   disabled: false,
