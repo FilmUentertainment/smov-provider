@@ -34,7 +34,7 @@ const languageMap: Record<string, string> = {
 
 export const xprimeFoxEmbed = makeEmbed({
   id: 'xprime-fox',
-  name: 'Fox',
+  name: 'filmu binge 2',
   rank: 240,
   async scrape(ctx): Promise<EmbedOutput> {
     const query = JSON.parse(ctx.url);
@@ -78,7 +78,7 @@ export const xprimeFoxEmbed = makeEmbed({
 
 export const xprimeApolloEmbed = makeEmbed({
   id: 'xprime-apollo',
-  name: 'Appolo',
+  name: 'filmu binge 1',
   rank: 241,
   async scrape(ctx): Promise<EmbedOutput> {
     const query = JSON.parse(ctx.url);
