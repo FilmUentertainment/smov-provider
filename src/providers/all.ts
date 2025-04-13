@@ -61,7 +61,7 @@ import { warezcdnembedHlsScraper } from './embeds/warezcdn/hls';
 import { warezcdnembedMp4Scraper } from './embeds/warezcdn/mp4';
 import { warezPlayerScraper } from './embeds/warezcdn/warezplayer';
 import { webtor1080Scraper, webtor480Scraper, webtor4kScraper, webtor720Scraper } from './embeds/webtor';
-import { xprimeApolloEmbed, xprimeFoxEmbed } from './embeds/xprime';
+import { xprimeApolloEmbed, xprimeFoxEmbed, xprimeStreamboxEmbed } from './embeds/xprime';
 import { coitusScraper } from './sources/coitus';
 import { embedsuScraper } from './sources/embedsu';
 import { FedAPIScraper } from './sources/fedapi';
@@ -167,5 +167,6 @@ export function gatherAllEmbeds(): Array<Embed> {
     rivePutafilmeScraper,
     xprimeFoxEmbed,
     xprimeApolloEmbed,
+    xprimeStreamboxEmbed,
   ];
 }
