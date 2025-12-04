@@ -8,8 +8,8 @@ import { NotFoundError } from '@/utils/errors';
 // thanks @TPN for this
 // See how to set this up yourself: https://gist.github.com/Pasithea0/9ba31d16580800e899c245a4379e902b
 
-const baseUrl = 'https://iosmirrorcc.com';
-const baseUrl2 = 'https://filmueproxy.vercel.app/iosmirrorcc.com:443';
+const baseUrl = 'https://netmirror.gg';
+const baseUrl2 = 'https://filmueproxy.vercel.app/netmirror.gg:443';
 
 type metaT = {
   year: string;
